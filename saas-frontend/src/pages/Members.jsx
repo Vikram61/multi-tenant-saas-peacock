@@ -6,9 +6,9 @@ import InviteModal from "../components/members/InviteModal";
 
 const Members=()=> {
   const [members, setMembers] = useState([]);
-  const [email, setEmail] = useState("");
-  const [role, setRole] = useState("MEMBER");
+
   const [showInvite, setShowInvite] = useState(false);
+const loadMembers = () => fetchMembers().then(setMembers);
 
 const { user, permissions } = useAuth();
 
@@ -25,18 +25,12 @@ const handleRemove = async (id) => {
   fetchMembers().then(setMembers);
 };
 
-  useEffect(() => {
-    fetchMembers().then(setMembers);
-  }, []);
+useEffect(() => {
+  loadMembers();
+}, []);
 
-  const handleInvite = async () => {
-    const res = await inviteMember(email, role);
-   const inviteUrl = `${window.location.origin}/join/${res.token}`;
-await navigator.clipboard.writeText(inviteUrl);
-alert("Invite link copied:\n" + inviteUrl);
 
-    setEmail("");
-  };
+
 
   return (
     <div>
@@ -100,6 +94,14 @@ alert("Invite link copied:\n" + inviteUrl);
     </div>
   ))}
 </div>
+{showInvite && (
+  <InviteModal
+    open={showInvite}
+  
+    onClose={()=>setShowInvite(false)}
+    
+  />
+)}
 
     </div>
   );

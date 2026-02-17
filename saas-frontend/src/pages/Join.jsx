@@ -23,7 +23,14 @@ const Join = () => {
       navigate("/login");
 
     } catch (err) {
-      setError(err.response?.data?.message || "Invite invalid");
+      const code = err.response?.data?.code;
+
+  if (code === "ACCOUNT_EXISTS_LOGIN") {
+    navigate(`/login?invite=${token}`);
+    return;
+  }
+
+  setError(err.response?.data?.message || "Invite invalid");
     } finally {
       setLoading(false);
     }

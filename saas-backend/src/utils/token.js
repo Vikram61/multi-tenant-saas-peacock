@@ -10,17 +10,9 @@ const createAccessToken = (user)=>{
             tokenVersion: user.tokenVersion
         },
         process.env.JWT_ACCESS_SECRET,
-        {expiresIn:"10m"}
+        {expiresIn:"7d"}
     )
 };
 
-const createRefreshToken = (user)=>{
-    return jwt.sign({
-        userId:user._id,
-        tokenVersion:user.tokenVersion
-    },
-    process.env.JWT_REFRESH_SECRET,
-    {expiresIn:"7d"})
-}
 
-module.exports = {createAccessToken, createRefreshToken};
+module.exports = {createAccessToken};

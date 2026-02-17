@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { loginUser } from "../api/auth";
-import { refreshAccessToken } from "../api/refresh";
+ import { setAccessToken } from "../api/tokenStore";
+import client from "../api/client";
+
 
 export default function Login() {
 
@@ -12,28 +14,39 @@ export default function Login() {
   const handleChange = e =>
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
-  const handleSubmit = async e => {
-    e.preventDefault();
 
-    try {
-      setLoading(true);
-      setError(null);
 
-      // STEP 1 → backend sets refresh cookie
-      await loginUser(form.email, form.password);
+const handleSubmit = async e => {
+  e.preventDefault();
 
-      // STEP 2 → obtain access token from cookie
-      await refreshAccessToken();
+  try {
+    setLoading(true);
+    setError(null);
 
-      // STEP 3 → reload app session
-      window.location.href = "/";
+    // 1) login
+    const res = await loginUser(form.email, form.password);
 
-    } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+    // 2) save token
+    setAccessToken(res.accessToken);
+
+    // 3) bootstrap session (CRITICAL STEP)
+    await client.get("/auth/me");
+
+    // 4) invite join
+    const params = new URLSearchParams(window.location.search);
+  
+
+    // 5) enter app
+    window.location.replace("/");
+
+  } catch (err) {
+    setError(err.response?.data?.message || "Login failed");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--bg)] px-4">

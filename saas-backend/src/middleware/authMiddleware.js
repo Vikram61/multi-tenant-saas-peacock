@@ -4,7 +4,8 @@ const User = require("../models/User");
 exports.requireAuth = async (req, res, next) => {
   try {
     const header = req.headers.authorization;
-    console.log(header);
+    console.log("AUTH HEADER:", req.headers.authorization);
+
     if (!header || !header.startsWith("Bearer "))
       return res.status(401).json({ message: "No token" });
 
@@ -28,7 +29,7 @@ exports.requireAuth = async (req, res, next) => {
     next();
 
   } catch (err) {
-    console.log("AUTH ERROR:", err.message);
+    console.log("JWT ERROR:",err.name, err.message);
     return res.status(401).json({ message: "Unauthorized" });
   }
 };

@@ -46,66 +46,24 @@ const updateProfile = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    console.log("STEP 1 - request received");
+    console.log("LOGIN BODY:", req.body);
 
     const { email, password } = req.body;
 
-    console.log("STEP 2 - before service");
+    const { accessToken } = await loginUser({ email, password });
 
-    const { accessToken, refreshToken } = await loginUser({ email, password });
-
-    console.log("STEP 3 - tokens created");
-
-    res.cookie("jid", refreshToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      path: "/",
-    });
-
-    console.log("STEP 4 - cookie set");
+    console.log("LOGIN SUCCESS");
 
     res.json({ accessToken });
 
-    console.log("STEP 5 - response sent");
-
   } catch (err) {
-    console.log("ERROR:", err);
-    res.status(400).json({ message: "Invalid credentials" });
+    console.log("LOGIN ERROR:", err.message);
+    res.status(400).json({ message: err.message });
   }
 };
 
-const refresh = async(req,res)=>{
-      console.log("RAW COOKIE HEADER:", req.headers.cookie);
-  console.log("PARSED COOKIES:", req.cookies);
-try {
-    console.log("Cookies received:", req.cookies);
 
-    const token = req.cookies.jid;
-    if (!token) {
-      console.log("No token found");
-      return res.status(401).json({ message: "No token" });
-    }
 
-    const payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
-    console.log("Decoded payload:", payload);
-
-    const user = await User.findById(payload.userId);
-    console.log("DB user:", user?.id, "tokenVersion:", user?.tokenVersion);
-
-    if (!user || user.tokenVersion !== payload.tokenVersion) {
-      console.log("Token version mismatch");
-      return res.status(401).json({ message: "Invalid token version" });
-    }
-
-    const accessToken = createAccessToken(user);
-
-    return res.json({ accessToken });
-  } catch (err) {
-    console.log("REFRESH ERROR:", err.message);
-    return res.status(401).json({ message: "Invalid refresh token" });
-  }
-};
 
 const logoutAll = async(req,res)=>{
     await User.findByIdAndUpdate(req.user._id, {
@@ -122,15 +80,6 @@ const me = async (req, res) => {
     organization: req.user.organization
   });
 };
-const logout = async (req, res) => {
-  res.clearCookie("jid", {
-    httpOnly: true,
-    secure: false,
-    sameSite: "lax",
-    path: "/"
-  });
 
-  return res.json({ message: "Logged out" });
-};
 
-module.exports = {signup,login,refresh,logoutAll,me, updateProfile, logout};
+module.exports = {signup,login,logoutAll,me, updateProfile};

@@ -1,4 +1,4 @@
-const { changePassword } = require("../controllers/userController");
+const  changePassword  = require("../controllers/userController");
 const {requireAuth} = require("../middleware/authMiddleware");
 const express = require("express");
 const router = express.Router();

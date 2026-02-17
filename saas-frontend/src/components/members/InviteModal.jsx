@@ -15,13 +15,17 @@ export default function InviteModal({ open, onClose, onInvited }) {
       const res = await inviteMember(email, role);
 
       const inviteUrl = `${window.location.origin}/join/${res.token}`;
-      setLink(inviteUrl);
-
-      onInvited(); // refresh members list
+      setLink(inviteUrl); // refresh members list
     } finally {
       setLoading(false);
     }
   };
+const close = () => {
+  setEmail("");
+  setRole("MEMBER");
+  setLink(null);
+  onClose();
+};
 
   const copy = async () => {
     await navigator.clipboard.writeText(link);
@@ -83,7 +87,7 @@ export default function InviteModal({ open, onClose, onInvited }) {
         )}
 
         <button
-          onClick={onClose}
+          onClick={close}
           className="text-sm opacity-70 hover:opacity-100"
         >
           Close

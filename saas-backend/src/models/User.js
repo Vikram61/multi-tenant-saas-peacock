@@ -25,8 +25,12 @@ const userSchema = new mongoose.Schema({
 
     role: {
         type:String,
-        enum : ["OWNER","ADMIN","MEMBER","OWNER_TEMP"],
-        default:"MEMBER"
+        enum : ["OWNER","ADMIN","MEMBER","OWNER_TEMP","NO_ORG"],
+        default:"NO_ORG",
+        required: function () {
+    return !["NO_ORG","OWNER_TEMP"].includes(this.role);
+}
+
     },
 
     tokenVersion : {

@@ -7,6 +7,7 @@ const InnerProtected = ({ children }) => {
 
   if (loading) return null;
   if (!user) return <Navigate to="/signup" replace state={{from : location}} />;
+if (user && !user.organization) return <Navigate to="/create-or-join" />;
 
   return children;
 };

@@ -8,6 +8,8 @@ const { allowRoles } = require("../middleware/roleMiddleware");
 const { checkMemberLimit } = require("../middleware/planMiddleware");
 const { upgradePlan } = require("../controllers/orgController");
 const { createInvitation } = require("../services/inviteService");
+const { updateRole, removeMember } = require("../controllers/memberController");
+
 router.get('/me',requireAuth, requireTenant, async(req,res)=>{
     const org = await Organization.findById(req.tenantId).select("name plan memberCount projectCount");
     res.json(org);
@@ -59,7 +61,9 @@ router.post(
         return res.status(400).json({ message: "Invalid role" });
 
       // create invite
-      const invite = await createInvitation(email, req.tenantId, assignedRole);
+      const normalizedEmail = email.toLowerCase().trim();
+const invite = await createInvitation(normalizedEmail, req.tenantId, assignedRole);
+
 
       return res.status(201).json({
         message: "Invitation created",
@@ -73,5 +77,25 @@ router.post(
     }
   }
 );
+
+
+// change role
+router.patch(
+  "/members/:id/role",
+  requireAuth,
+  requireTenant,
+  allowRoles("OWNER", "ADMIN"),
+  updateRole
+);
+
+// remove member
+router.delete(
+  "/members/:id",
+  requireAuth,
+  requireTenant,
+  allowRoles("OWNER"),
+  removeMember
+);
+
 
 module.exports = router;

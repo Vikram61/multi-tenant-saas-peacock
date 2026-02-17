@@ -1,6 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
-const {createAccessToken, createRefreshToken} = require('../utils/token');
+const {createAccessToken} = require('../utils/token');
 
 
 const mongoose = require("mongoose");
@@ -68,9 +68,8 @@ const loginUser = async({email,password})=>{
     console.log("password match",isMatch)
     if(!isMatch) throw new Error("Invalid Credentials");
     const accessToken = createAccessToken(user);
-    const refreshToken = createRefreshToken(user);
 
-    return {user,accessToken,refreshToken}
+    return {user,accessToken}
 }
 
 module.exports = {registerUser, loginUser};

@@ -1,9 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import client from "../api/client";
-import { refreshAccessToken } from "../api/refresh";
 import { fetchOrg } from "../api/org";
 import * as perm from "../utils/permissions";
-
+import { getAccessToken, clearAccessToken, setAccessToken } from "../api/tokenStore";
 
 const AuthContext = createContext();
 
@@ -11,57 +10,48 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [org, setOrg] = useState(null);
   const [loading, setLoading] = useState(true);
-const PUBLIC_ROUTES = ["/login", "/join", '/signup'];
 
-const logoutUser = async () => {
-  try {
-    await logout();
-  } catch {}
 
+
+const logoutUser = () => {
   setUser(null);
   setOrg(null);
-  setAccessToken(null);
+  window.location.href = "/login";
 };
 
 
+
+
 const loadSession = async () => {
-  const path = window.location.pathname;
-
-  if (PUBLIC_ROUTES.some(r => path.startsWith(r))) {
-    setLoading(false);
-    return;
-  }
-
   try {
-    // Step 1 — try restore session
-    const token = await refreshAccessToken();
-    if (!token) throw new Error("No session");
-
-    // Step 2 — identify user
-    const me = await client.get("/auth/me", { skipAuthRefresh: true });
+    const me = await client.get("/auth/me");
     setUser(me.data);
 
-    // Step 3 — ONLY NOW fetch org
-    try {
-      const organization = await fetchOrg(); 
-      setOrg(organization);
-    } catch {
-      setOrg(null); // prevent retry loop
-    }
+    const organization = await fetchOrg();
+    setOrg(organization);
 
   } catch {
     setUser(null);
     setOrg(null);
+    clearAccessToken();
   } finally {
     setLoading(false);
   }
 };
 
 
+useEffect(() => {
+  const url = new URL(window.location.href);
 
-  useEffect(() => {
-    loadSession();
-  }, []);
+  // Skip auth check if invite flow in progress
+  if (url.searchParams.get("invite")) {
+    setLoading(false);
+    return;
+  }
+
+  loadSession();
+}, []);
+
 
   return (
 <AuthContext.Provider value={{
