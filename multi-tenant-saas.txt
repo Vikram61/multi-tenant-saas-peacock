@@ -1,0 +1,300 @@
+What We Are Building (Product Vision)
+
+A platform where:
+
+Companies create an organization workspace
+
+Employees join the company
+
+Each employee has a role (admin, manager, member)
+
+Data of Company A is completely invisible to Company B
+
+Subscription plans limit usage (e.g., max users, max projects)
+
+Admin dashboard shows analytics
+
+Example use case:
+
+A startup uses your app to manage internal tasks/projects
+Another startup signs up → they should never see first startup’s data
+
+This is the core idea of SaaS multi-tenancy.
+
+Learning Roadmap (Strict Order)
+
+We follow industry architecture order — not tutorial order.
+
+PHASE 1 — Authentication & Identity Model (Foundation)
+
+Without this → multi-tenant is impossible.
+
+You Must Master
+
+JWT authentication deeply
+
+Sessions vs Tokens
+
+Password hashing
+
+Login flows
+
+Refresh tokens
+
+Authorization vs Authentication (very important)
+
+What You Will Build
+
+A standalone authentication service:
+
+Signup
+
+Login
+
+Protected route
+
+Access token + refresh token
+
+Logout (invalidate refresh token)
+
+Concepts You Must Understand (Important)
+
+You must be able to answer these:
+
+Why JWT should be short lived?
+
+Why refresh tokens stored in DB?
+
+Why password is never decryptable?
+
+Why we never trust frontend role?
+
+Exercises (Do before moving ahead)
+
+Exercise 1
+Create middleware:
+
+req.user = decodedUserFromToken
+
+
+and protect route /profile
+
+Exercise 2
+Implement refresh token rotation:
+
+Old refresh token becomes invalid after use
+
+Exercise 3
+Force logout all devices
+
+(Hint: tokenVersion in DB)
+
+When you complete this → you are already above average backend dev.
+
+PHASE 2 — Multi-Tenant Database Design (Most Important Phase)
+
+This is the REAL core of the project.
+
+You now learn how companies exist in software.
+
+Key Idea
+
+Every record belongs to a tenant.
+
+We introduce a new entity:
+
+Organization (Tenant)
+
+
+Every user belongs to exactly one organization.
+
+Data Model You Will Learn
+
+User is NOT global anymore.
+
+Instead:
+
+User
+ └── belongs to Organization
+
+
+All future data will include:
+
+organizationId
+
+Critical Concept: Data Leakage
+
+The worst SaaS bug:
+
+User from Company A can see Company B data
+
+Your entire backend design exists to prevent this.
+
+Exercises
+
+Exercise 4 — Schema Design
+
+Design collections:
+
+organizations
+
+users
+
+invitations
+
+Draw relationship diagram on paper first.
+
+Exercise 5 — Tenant Middleware
+
+Create middleware:
+
+req.tenantId
+
+
+derived from logged in user
+
+Then modify:
+
+Project.find()
+
+
+to automatically become:
+
+Project.find({ organizationId: req.tenantId })
+
+
+No controller should manually filter tenant.
+
+This is INDUSTRY PRACTICE.
+
+PHASE 3 — RBAC (Role Based Access Control)
+
+Now we stop users doing admin actions.
+
+You Will Learn
+
+Difference between:
+
+Concept	Meaning
+Authentication	Who are you
+Authorization	What you can do
+Roles
+
+Owner
+
+Admin
+
+Member
+
+Implementation Idea
+
+Permission middleware:
+
+allowRoles("ADMIN", "OWNER")
+
+Exercises
+
+Exercise 6
+Prevent members from deleting projects
+
+Exercise 7
+Only owner can upgrade subscription
+
+PHASE 4 — Subscription & Usage Metering
+
+Now we simulate real SaaS revenue model.
+
+Concepts
+
+Hardest backend concepts in this project:
+
+Quotas
+
+Plan enforcement
+
+Feature gating
+
+Example:
+
+Free Plan:
+
+max 3 users
+
+max 5 projects
+
+Pro Plan:
+
+unlimited users
+
+analytics enabled
+
+Exercises
+
+Exercise 8
+Block creating 6th project on free plan
+
+Exercise 9
+Upgrade plan → restrictions disappear instantly
+
+PHASE 5 — Frontend (Your Strength Area)
+
+Now your frontend skills shine.
+
+You will implement:
+
+Workspace switcher
+
+Invite users modal
+
+Admin panel
+
+Analytics dashboard
+
+Dark/light theme engine
+
+We will implement a real theme system (not CSS toggle hack):
+
+CSS Variables + Context + Persistent preference
+
+PHASE 6 — Deployment (Most Students Skip — Recruiters Notice)
+
+You will learn:
+
+Backend → Render / Railway / VPS
+
+Frontend → Vercel
+
+MongoDB Atlas production config
+
+Environment separation
+
+Cookie security in production
+
+CORS production handling
+
+Tech Stack We Will Use
+
+MERN + Production additions:
+
+Express
+
+MongoDB
+
+JWT + Refresh tokens
+
+Socket ready architecture (future extendable)
+
+Redis (optional bonus)
+
+Tailwind + Custom CSS variables for theme system
+
+
+
+┌ Sidebar ────────┬──────────── Topbar ─────────────┐
+│ Projects        │ Workspace name        Theme     │
+│ Members         │ Invite button         Profile   │
+│ Settings        ├─────────────────────────────────┤
+│ Upgrade         │                                 │
+│                 │           Page Content          │
+│                 │                                 │
+└─────────────────┴─────────────────────────────────┘
