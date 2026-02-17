@@ -10,11 +10,13 @@ import Join from './pages/Join';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import { AuthProvider } from './context/AuthContext';
+import Signup from './pages/Signup';
 
 const App = () => {
   return (
 <Routes>
   {/* public */}
+  <Route path='/signup' element={<Signup/>} />
   <Route path="/login" element={<Login />} />
   <Route path="/join/:token" element={<Join />} />
 

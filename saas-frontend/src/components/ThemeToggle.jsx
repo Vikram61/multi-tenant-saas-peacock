@@ -1,27 +1,28 @@
-import {motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
 
 const ThemeToggle = () => {
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
 
-    const {theme, toggleTheme} = useTheme();
   return (
-    <div>
-        <button
-        onClick={toggleTheme}
-        className="relative w-14 h-8 rounded-full bg-[var(--card)] border border-[var(--border)] flex items-center px-1"
-        >
-        <motion.div
-            layout
-            transition={{ type: "spring", stiffness: 500, damping: 30 }}
-            className="w-6 h-6 rounded-full bg-[var(--primary)]"
-            style={{
-            marginLeft: theme === "light" ? "22px" : "0px"
-            }}
-        />
-        </button>
+    <button
+      onClick={toggleTheme}
+      className="relative w-14 h-8 rounded-full border border-[var(--border)] bg-[var(--hover)] flex items-center px-1 transition"
+    >
+      {/* ICONS */}
+      <span className="absolute left-2 text-xs">☀️</span>
+      <span className="absolute right-2 text-xs">🌙</span>
 
-    </div>
-  )
-}
+      {/* KNOB */}
+      <motion.div
+        layout
+        transition={{ type: "spring", stiffness: 500, damping: 35 }}
+        className="w-6 h-6 rounded-full bg-[var(--primary)] shadow-md"
+        style={{ marginLeft: isDark ? "24px" : "0px" }}
+      />
+    </button>
+  );
+};
 
-export default ThemeToggle
+export default ThemeToggle;

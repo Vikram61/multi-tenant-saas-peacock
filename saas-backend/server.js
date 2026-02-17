@@ -9,7 +9,8 @@ const errorHandler = require("./src/middleware/errorMiddleware");
 const projectRoutes = require("./src/routes/projectRoutes");
 const orgRoutes = require('./src/routes/orgRoutes');
 const memberRoutes = require("./src/routes/memberRoutes");
-const analyticsRoutes = require('./src/routes/analyticsRoutes')
+const analyticsRoutes = require('./src/routes/analyticsRoutes');
+const userRoutes = require('./src/routes/userRoutes');
 const cors = require('cors');
 const app = express();
 app.use(cookieParser());
@@ -30,6 +31,7 @@ app.use("/api/projects", projectRoutes);
 
 app.use("/api/org", orgRoutes);
 app.use("/api/billing", billingRoutes);
+app.use("/api/users", userRoutes);
 
 app.use("/api/analytics", analyticsRoutes);
 

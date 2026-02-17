@@ -1,6 +1,6 @@
 const express = require('express');
 const router  = express.Router();
-const {signup,login,refresh, me} = require('../controllers/authController');
+const {signup,login,refresh, me, updateProfile, logout} = require('../controllers/authController');
 const { acceptInvitation } = require("../services/acceptInviteService");
 const {requireAuth} = require('../middleware/authMiddleware')
 const User = require('../models/User');
@@ -25,9 +25,11 @@ router.post("/accept-invite", async (req, res) => {
   }
 });
 router.get("/me", requireAuth, me);
+router.patch("/profile", requireAuth, updateProfile);
 
 router.post('/signup',signup);
 router.post('/login',login);
+router.post('/logout', logout);
 router.post('/refresh',refresh);
 
 module.exports = router;

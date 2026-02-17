@@ -24,6 +24,25 @@ const signup = async(req,res)=>{
     res.status(400).json({message:err.message});
    }
 };
+const updateProfile = async (req, res) => {
+  try {
+    const { name } = req.body;
+
+    if (!name || name.trim().length < 2)
+      return res.status(400).json({ message: "Invalid name" });
+
+    req.user.name = name;
+    await req.user.save();
+
+    res.json({
+      message: "Profile updated",
+      name: req.user.name
+    });
+
+  } catch (err) {
+    res.status(500).json({ message: "Update failed" });
+  }
+};
 
 const login = async (req, res) => {
   try {
@@ -103,5 +122,15 @@ const me = async (req, res) => {
     organization: req.user.organization
   });
 };
+const logout = async (req, res) => {
+  res.clearCookie("jid", {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+    path: "/"
+  });
 
-module.exports = {signup,login,refresh,logoutAll,me};
+  return res.json({ message: "Logged out" });
+};
+
+module.exports = {signup,login,refresh,logoutAll,me, updateProfile, logout};

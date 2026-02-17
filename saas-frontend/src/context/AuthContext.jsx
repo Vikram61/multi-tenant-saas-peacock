@@ -11,7 +11,17 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [org, setOrg] = useState(null);
   const [loading, setLoading] = useState(true);
-const PUBLIC_ROUTES = ["/login", "/join"];
+const PUBLIC_ROUTES = ["/login", "/join", '/signup'];
+
+const logoutUser = async () => {
+  try {
+    await logout();
+  } catch {}
+
+  setUser(null);
+  setOrg(null);
+  setAccessToken(null);
+};
 
 
 const loadSession = async () => {
@@ -56,6 +66,8 @@ const loadSession = async () => {
   return (
 <AuthContext.Provider value={{
     user,
+    setUser,
+    logoutUser,
     org,
     loading,
     permissions: user ? {

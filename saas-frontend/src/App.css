@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+/* .input {
+  @apply w-full border border-[var(--border)] bg-transparent px-3 py-2 rounded-lg;
+}
+
+.input.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+} */
