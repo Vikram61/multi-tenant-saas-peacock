@@ -35,4 +35,4 @@ app.get('/',(req,res)=>{
     res.send("API running successfully")
 })
 
-app.listen(5000, ()=>console.log("Server Running"));
+app.listen(process.env.PORT || 5000, ()=>console.log("Server Running"));
