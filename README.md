@@ -82,3 +82,30 @@ Each user document contains:
   organization,
   tokenVersion
 }
+
+saas-frontend/
+  ├── src/
+  │   ├── api/
+  │   ├── components/
+  │   ├── context/
+  │   ├── pages/
+  │   └── utils/
+
+saas-backend/
+  ├── src/
+  │   ├── controllers/
+  │   ├── services/
+  │   ├── middleware/
+  │   ├── models/
+  │   ├── routes/
+  │   └── utils/
+```
+
+```bash
+PORT=5000
+MONGO_URI=your_mongodb_atlas_uri
+JWT_ACCESS_SECRET=your_secret_key
+CLIENT_URL=https://multi-tenant-saas-peacock.vercel.app
+VITE_API_URL=https://multi-tenant-saas-peacock.onrender.com/api
+
+```
