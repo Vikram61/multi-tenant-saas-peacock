@@ -52,11 +52,11 @@ const Topbar = () => {
         )}
 
         {/* INVITE */}
-        {permissions?.canInvite && (
+        /* {permissions?.canInvite && (
           <button className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--primary)] text-white hover:opacity-90 transition shadow-sm">
             + Invite
           </button>
-        )}
+        )} */
 
         {/* THEME */}
         <ThemeToggle />
