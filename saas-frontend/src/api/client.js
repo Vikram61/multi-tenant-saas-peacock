@@ -3,7 +3,7 @@ import { getAccessToken } from "./tokenStore";
 import { triggerUpgrade } from "./upgradeHandler";
 
 const client = axios.create({
-  baseURL: "http://localhost:5000/api"
+  baseURL: import.meta.env.VITE_API_URL
 });
 
 client.interceptors.request.use(config => {

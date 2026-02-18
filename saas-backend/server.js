@@ -13,12 +13,16 @@ const userRoutes = require('./src/routes/userRoutes');
 const cors = require('cors');
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true
+}));
 app.use(express.json());
 
 
 
 connectDB();
+app.set("trust proxy", 1);
 
 
 app.use("/api/projects", projectRoutes);
